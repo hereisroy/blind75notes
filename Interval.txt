@@ -1,0 +1,35 @@
+------------Insert Interval-----------
+Intuition : 
+	if intervals[i][1]<newInterval[0], then interval i comes before newInterval
+	All the next intervals will come after newInterval if intervals[i][0]>newInterval[1], or we can say
+	then, if intervals[i][0]<=newInterval[1], interval i is overlapping. Need to merge.
+	then, for all i<n, interval i comes after newInterval.
+	
+	We can find newInterval's appropriate pos and mergeCount in one travarsal. Then using these we can create required sized array and fill in another traversal. Till pos-1 we just need to add intervals from old array to new array. After adding new node, new array's i index will be old arrays i+mergeCount-1 index.
+	
+Time Complexity : O(n)
+Space Complexity : O(1)
+	when using two traversal method, if using list then space required is O(n)
+	
+-----------Merge Intervals------------
+Intuition :
+	if the intervals are sorted according to the start time,
+	if currentInterval's starttime is after previousIntervals end time, then they are not overlapping.
+	Or we can say, if currentInterval's starttime <= previousInterval's end time, then they are overlapping. Loop for i=1 to i<n, check if current is overlapping with previous. If yes, merge both into current (this becomes previous in the next loop), if not overlapping add previous to the result. After the loop ends, add the last interval.
+
+-----------Non-overlapping Intervals------------
+Intuition : In a intervals array which is sorted by endTime, any interval ends after the previous interval ends. Thus, If any interval's start is lesser than the previous interval's end, they are overlapping. In such case, it would be better to remove the interval which has higher end value as this has higher chance of overlapping with other intervals. In other word, it is better to keep the interval with lesser end value. We can keep track of the last intervals end time which we will keep and traverse from 2nd interval to count the number of overlapping intervals. If any interval overlaps we increase the count else we update the end value.
+
+Sol-> 
+	if len of interval array is 0, return 0
+	sort array with end value
+	set end = interval[0].end
+	set count=0
+	for all intervals from 2nd onwards
+		if interval.start<end, count++
+		else, end = interval.start
+	return count 
+	
+------------------Meeting Rooms II-------------------
+Intuition : We can maintain the currently ongoing meetings in a variable, say count. For every starting and ending point, we will update count(Increase & Decrease). As the problem allows start time of a meeting to be the same as the endtime of another meeting (Does not call this overlapping), if at the same time we have both start time and endTime, we have to apply endTime first (decrease count) for maintaing proper count. We can maintain startTime and endTime in different sorted arrays/lists and use two pointer approach to pick start time if its lesser or endtime. The highest value of the count is our ans.
+	

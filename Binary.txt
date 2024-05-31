@@ -1,0 +1,29 @@
+-----------Sum of Two Integers------------
+https://leetcode.com/problems/sum-of-two-integers/description/
+v : https://www.youtube.com/watch?v=qq64FrA2UXQ
+-> a^b gives sum, a&b gives carry. Keep adding sum with carry until carry is 0.
+
+-----------Number of 1 Bits/Hamming weight-------------
+https://leetcode.com/problems/number-of-1-bits/description/
+v : https://www.youtube.com/watch?v=nttpF8kwgd4&t=1884s
+-> n & (n-1) unsets the rightmost bit . Check how many times we need to unset the rightmost to make n=0.
+
+ 
+------Counting Bits--------
+https://leetcode.com/problems/counting-bits/description/
+v : https://www.youtube.com/watch?v=RyBM56RIWrM
+Tabulation -> traverse 2 -> n . count[i]=1+count[i-offset] where offset is the largest number which is a power of 2 encountered so far. To find the next offset check count[i]==offset*2
+
+Intuition -> As offset or the highest number < i which is a power of 2, is represented using a single set bit, dp[i]=1+dp[i-offset] 
+
+--------Missing Number---------
+https://leetcode.com/problems/missing-number/description/
+v : https://www.youtube.com/watch?v=WnPLSRLSANE
+Sol1 : find the sum of the range. Substract the sum of the array from it.
+Sol2 : do xor of all elements in array and all emements of the range. the result is the missing element.
+Sol3 : if x is present, add n+1 to the element at index x. check which index has value<n+1.
+
+---------Reverse Bits-----------
+https://leetcode.com/problems/reverse-bits/description/
+v : https://www.youtube.com/watch?v=UcoN6UjAI64
+-> do n&check (check=1) to check if a bit is set. Do check<<1 after each step to check more significant bit. Set res=0, then do res|=1 if a bit is set and do res<<1 to construct the result.

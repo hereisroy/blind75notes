@@ -1,0 +1,74 @@
+--------Reverse a Linked List-----------
+Intuition : for any node if we move its next pointer to its previous node, we will loose the pointer to next node. Thus we have to use three pointers, prev, curr and next.	We can also think of the problem in term of sub problems, to reverse a list with head i, we have to reverse the list having head i+1 then we need to point (i+1)'s next to i and i's next to null.
+	
+Sol(iterative)-> 
+	curr=head, prev=null,next;
+	while(curr!=null)
+		next=curr.next;
+		curr.next = prev;
+		prev=curr
+		curr=next
+	return prev
+	
+Sol(Recursive)->
+	newNode
+	if curr.next!=null
+		newNode = sol(curr.next)
+		curr.next.next=curr
+		curr.next=null
+	else
+		newNode=curr (The last node)
+	return newNode
+	
+Time Complexity : O(n)
+Space Complexity : O(1)
+	
+-------------Detect Cycle in a Linked List----------
+Intuition : If we use a hashset to mark a node as visited and then again encounter that node then we have a circle. But, we can solve this with constant memory. In a ground (which is a loop), if two runners run, one at speed x and one at speed 2x, then the fast runner is running respectively at speed x. And will catch the second runner again. In terms of a LinkedList, if we use two pointers and increase one by 1 node and the other by two nodes, then the fast pointer is coming towards the slow pointer at 1node/iteration speed. Thus, if after n iterations they are at the same position we can say that there is a loop of size n or having n nodes. As the fast pointer is faster it'll reach the end sooner, if there is no loop.
+
+Sol ->
+
+	if there are no nodes, return false (no loop)
+	create two nodes, s and f, both pointing to head
+	while(true)
+		if f.next==null || f.next.next==null, return false (no loop as we reached an end)
+		s = s.next , f=f.next.next
+		if(s==f) return true (there is loop as f has again reached s)
+		
+Time Complexity : O(n)
+Space Complexity : O(1)
+		
+------------Merge Two Sorted Lists-----------
+Intuition : Use a dummy node and a tail which is initially=dummy. Then use two pointers to get the smaller head, add smaller node to the tail of the merged list, update the head of the selected list and tail of the mergedList
+
+Time Complexity : O(n) [n=size of smaller list]
+Space Complexity : O(1)
+
+--------------Merge k Sorted Lists---------------
+Intiuition : Break the problem of merging n lists to merging n/2 lists and then to merging n/4 lists until the problem is to sort 2 lists(We can do using above mentioned idea) or 1 list(nothing to merge, just return the list). We will have logk levels and in each level, total number of elements in all the list combined is n. Thus, merging at each level is O(n). As there will be logK levels, total time complexity is O(N*LogK)
+
+mergeKListsHelper :-
+
+	if(r==l) return lists[r];
+	if(r-l==1) return merge(lists[l], lists[r]);
+	int m = l+(r-l)/2;
+	ListNode left = mergeKListsHelper(l,m, lists);
+	ListNode right = mergeKListsHelper(m+1, r, lists);
+	return merge(left, right);
+	
+Time Complexity : O(N*LogK) [N=number of elements in all lists combined]
+Space Complexity : O(1)
+
+-------------Remove Nth Node From End of List-----------
+Intuition :- If the target element is the first node, return the second node. Use two pointers, `fast` and `slow`, to find the node that needs to be removed. `fast` pointer moves ( n + 1 ) steps ahead of the `slow` pointer. When `fast` reaches the end of the list (`null`), `slow` will be at the node just before the one to be removed. Then do preTarget.next=preTarget.next.next to remove target node. 
+
+Time Complexity : O(N)
+Space Complexity : O(1)
+
+-------------Reorder List---------------
+Intuition : find the middle of the list. Reverse right half. Use two pointers to point to left & right list's head. Make left node point to right node and right node point to left.next .
+
+Slow & fast pointer method for finding middle : Use a slow pointer and a fast pointer. Point both to head. Then increase fast pointer to fast.next.next and if fast!=null & fast.next!=null, set slow = slow.next. When fast==null or fast.next==null, slow is pointing to the last element of the left list. Right's head = slow.next.
+
+Time Complexity : O(N)
+Space Complexity : O(1)

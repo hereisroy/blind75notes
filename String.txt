@@ -1,0 +1,106 @@
+ASCII Encoding : 
+
+	0-9 : 48 - 57
+	A-Z : 65 - 90
+	a-z : 97 - 123
+
+------------------Longest Substring Without Repeating Characters----------------
+Intuition : Maintain a set of characters in current subString. Use two pointers, i & j to mark the start and end index of the current substring. While increasing j if we find that the character at index j is already in the set, that means subString(i,j) has duplicates. We keep removing the character at index i from the set and increasing i, until the subString(i,j) does not have any duplicates. Increase j till n-1 and maintain the maxLen of substring.
+
+Time Complexity : O(N)
+Space Complexity : O(1)  
+
+--------------Longest Repeating Character Replacement-------------
+Intuition : In any substring if the highest count of a char is maxCount. Then, if len(SubStr)-maxCount<=k, it is possible to do the required replacements to make the whole substring repeating, making the subString a valid option. We can use two pointers to point to the start and the end of the subString and use sliding window technique and slide the window until the subString is valid. The max length of the subString (window) will be the ans.
+
+To maintain the counts we can use an array of size 26, as there are only uppercase eng letters. 'A' ASCII is 65. Thus for any char c, c-65 gives its index in the array. To find the max we have to loop the array. This will take O(26) or constant time.
+
+Time Complexity : O(N)
+Space Complexity : O(1)
+	As O(26) is constant
+	
+---------------Minimum Window Substring----------------
+Intuition : Any subString of s will be valid if all the chars in it are in ample ammount. Lets say using isValid method we can get valid or not. Then, we can use two pointers and the sliding window technique to find the min string. If we point i to the start of the window and j to the end of the window. Then we will increase j until we get a valid window. Once we get a valid window, we'll keep increasing i to make the window shorter as long as the window is valid. We have to keep track of the minLen and the indexs so that we can construct the subString and return as result.
+
+To maintain the counts we can use two arrays of size 58, as there are only uppercase and lower case eng letters. 'A'->65, 'Z'->90,'a'->97 & 'z'->123. Thus for any char c, c-65 gives its index in the array. We can loop and check if sAlphaCount[i]>=tAlphaCount[i]. This will take O(58) or constant time.
+
+Time Complexity : O(N)
+Space Complexity : O(1)
+	As O(28) is constant
+	
+-------------------Group Anagrams------------------
+Intuition : To sort a string it takes O(nLogn) but it takes O(n) only to find and compare the alphaCount of a str. Thus alpha count method will be faster. Now, we can use an array alphaCounts[n][26] to store all counts as strs will only have lower case eng letters. To merge strings with same alpha count we can use a HashMap. We can construct a key using all alphaCount for that string (alphaCount[i]+"-"). This key will be same for all strings having same counts. Then we can create a list and addAll(map.values()) and return.
+
+Time Complexity : O(N*M)
+	where M is the avg length of a string
+Space Complexity : O(N)
+	for every string we will have a int[26] which is O(1)
+	
+-----------------Valid Parentheses-----------------
+Intuition : Before a closing bracket there should be a matching opening bracket. Also, for every opening bracket there should be a matching closing bracket. Traverse through the string left to right. If we encounter a opening bracket, push into the stack. If we encounter a closing bracket, at the top of the stack there should be a matching opening bracket, if found pop that out. After traversal if the stack should be empty.
+ 
+Time Complexity : O(N)
+Space Complexity : O(1)
+
+---------------Longest Palindromic Substring---------
+Intuition : For every index, considering the character at that index as the center we can expand on both sides to determine the length of the odd sized palindrome and for each index we can consider the character and the next character as the two middle palindromes and expand to find the even length palindrome. We can maintain maxLen & the left & right index values of the max palindrome. With the l & r value, we can construct the palindrome.
+
+expand method:
+	public int expand(String s, int l, int r){
+        int len = 0, n = s.length();
+        while(l>=0 && l<n && r>=0 && r<n && s.charAt(l)==s.charAt(r))     
+        {
+            if(l==r) len+=1; // note this check
+            else len+=2;
+            l--; r++;
+        }
+        
+        return len;
+    }
+	
+Constructing subString with l, r & maxLen :
+	int w;
+	if(maxLen%2==0) w = (maxLen-2)/2;
+	else w = (maxLen-1)/2;
+	return s.substring(l-w, r+w+1);
+	
+Time Complexity : O(N^2)
+	If all characters are same, expand method will expand to the nearby edge for every index
+Space Complexity : O(1)
+
+-------------Palindromic Substrings-----------
+Intuition : Use the expand logic to return number of palindromes. And add up the count of possible palindromes for even & odd for every index.
+
+Time Complexity : O(N^2)
+	If all characters are same, expand method will expand to the nearby edge for every index
+Space Complexity : O(1)
+
+---------------Encode and Decode Strings-------------
+Intuition : As the problem states that the string contains all kind of characters, we can not use any string as delimeter. Instead we can add len(String)+"#" before every string.
+
+public String encode(List<String> strs) {
+	StringBuilder sb = new StringBuilder();
+	int len;
+	for(String str : strs){
+		len = str.length();
+		sb.append(len).append("#").append(str);
+	}
+
+	return sb.toString();
+}
+
+public List<String> decode(String str) {
+	int n=str.length(), i=0, j, len;
+	List<String> res = new ArrayList<>();
+	while(i<n){
+		j=i;
+		while(str.charAt(j)!='#') j++;
+		len = Integer.parseInt(str.substring(i, j));
+		res.add(str.substring(j+1, j+1+len));
+		i=j+1+len;
+	}
+	return res;
+}
+
+Time Complexity : O(N)
+Space Complexity : O(1)

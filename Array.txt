@@ -1,0 +1,72 @@
+---------------TwoSum-------------------- 
+https://leetcode.com/problems/two-sum/description/
+-> Sol1 : Use HashMap to store indexs of numbers (Note: We can have duplicates but storing index of any of the occurances will do the job). Then loop through all numbers and check if diff=target-nums[i] is present in the HashMap & also that the index for diff is not i. If yes, return {i, map.get(diff)}
+	AVG O(n) Time, Worst O(n2), O(n) space
+
+For variations where we need not return indexes. For example, check if such pair exist, count number of pairs etc.
+
+-> Sol2 : Sort Array. Then use two pointers. If the sum of the pointed numbers is smaller than the target do i++, if it is greater, do j--
+	AVG O(nLogN) Time, O(1) space
+	
+	Note : Sol2 should only be used where we need not return index. As sorting will shuffel the indexes and if we store the index separately, it'll take O(n) memory. If we can use that space, then Sol1 provides better time complexity.
+	
+----------Best Time to Buy and Sell Stock--------- 
+https://leetcode.com/problems/best-time-to-buy-and-sell-stock/description/
+-> Go left to right, if lower price is found change buy price, else calculate and compare profit
+
+Time Complexity : (n)
+Space Complexity : O(1)
+
+------------Product of Array Except Self------------
+https://leetcode.com/problems/product-of-array-except-self/description/
+-> Create preProduct and postProduct arrays
+
+Time Complexity : (n)
+Space Complexity : O(n)
+
+------------Maximum Sum Subarray-------------
+https://leetcode.com/problems/maximum-subarray/description/
+-> A sub array whose sum is negative, can not be a proper subset of the maximum subarray
+
+Time Complexity : (n)
+Space Complexity : O(1)
+
+-------------Maximum Product Subarray----------
+https://leetcode.com/problems/maximum-product-subarray/description/
+-> Sol1 : go from left to right, keep track of candidateMax and candidateMin when including the current number. For a negative number, candidateMin becomes the candidateMax.
+
+Time Complexity : (n)
+Space Complexity : O(1)
+
+-> Sol2 : ans=max of prefixProduct(Inclusive) array and suffixProductArray(Inclusive)
+
+Time Complexity : (n)
+Space Complexity : O(1)
+
+-------Find Minimum in Rotated Sorted Array--------------
+https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/description/
+-> Use Binay Search. If the left half is sorted, take the first element of the left part as candidateMin else consider the right part as sorted and take it's first elem as candidateMin. Eliminate the sorted half.
+
+Time Complexity : (LogN)
+Space Complexity : O(1)
+
+---------Search in Rotated Sorted Array-----------
+https://leetcode.com/problems/search-in-rotated-sorted-array/description/
+-> Find the sorted half, then use binary search to search the sorted half
+
+Time Complexity : (LogN)
+Space Complexity : O(1)
+
+-------------------3Sum------------------
+https://leetcode.com/problems/3sum/description/
+-> sort array, for all i, solve two sum with j=i+1 & k=n-1 using two pointers. change values of i,j & k to skip duplicates.
+
+Time Complexity : (n2)
+Space Complexity : O(1)
+
+------------Container With Most Water----------------
+https://leetcode.com/problems/container-with-most-water/description/
+-> Point to both ends, calculate area and maintain as max. move the pointer having lower height to a higher height, calculate area and compare with max area. Continue till i<j 
+
+Time Complexity : (n)
+Space Complexity : O(1)

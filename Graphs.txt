@@ -1,0 +1,308 @@
+Important Algos :- BFS & DFS on undirected & directed Graphs, Circle detection on directed and undirected graph using DFS, Number of components, topological sort using BFS & DFS
+
+
+
+BFS :- using BFS we can traverse a graph in a distance wise sorted manner. 
+
+	create visited array of size v(0 based index)/v+1(1 based index, in this case mark 0)
+	create queue
+	enqueue & mark starting node as visited
+	while q is not empty
+		get node n from queue
+		process n 
+		for all neighbors of n
+			if neighbor node is not visited do below
+			enqueue & mark neighbor
+			
+Time Complexity : O(V+E)
+	The visiting array initialization & node processing is O(V) and traversing through all neighbors of all nodes together is O(E). Thus, net time complexity is O(V+E)
+Space Complexity : O(V)
+	Extra space required is only for visited array O(V) and Queue O(V). In adj list is not given, and we have to construct adj list, it will take O(E) space.
+			
+DFS :- used to traverse a graph in a depth first manner.
+
+IMP1(Recursion):
+	create visited array of size v(0 based index)/v+1(1 based index, in this case mark 0)
+	pass current node, adj list & visited array
+	In each dfs method call
+		if current node is visited then return
+		mark current node as visited
+		process current node
+		for all neighbors
+			call dfs(neighbor, adj, visited)
+			
+IMP2(Stack):
+	create visited array of size v(0 based index)/v+1(1 based index, in this case mark 0)
+	create stack
+	push starting node into stack and mark as visited
+	while stack is not empty
+		currNode=stack.pop()
+		process currNode
+		for all neighbors
+			if visited[neighbor]==0, then do below
+			push neighbor into stack and mark as visited
+			
+Time Complexity : O(V+E)
+	The visiting array initialization & node processing is O(V) and traversing through all neighbors of all nodes together is O(E). Thus, net time complexity is O(V+E)
+Space Complexity : O(V)
+	Extra space required is only for visited array O(V) and recursion stack/stack O(V). In adj list is not given, and we have to construct adj list, it will take O(E) space.
+	
+Cycle Detection :-
+
+	Directed graph using DFS : During traversal if we reach a node which is a part of the current path (currently being visited) then there is a circle. As a node can be part of multiple paths and can be visited multiple times, we need to be able to mark nodes as visiting and visited. We can use the visited array a bit differently. Lets say, visited[i]=1 means this node is currenly being visited, visited[i]=2 means the node was visited. 
+	
+	In every hasCircle method call do below
+	if this node is visiting, return true
+	if this node was visited, return false
+	mark current node as visiting (visited[i]=1)
+	for all neighbors 
+		if hasCircle, return true
+	mark current node as visited (visited[i]=2)
+	return false
+	
+	Undirected graph using DFS : In a undirected graph, while traversing if we reach any node which is already visited and not the parent of the curr node, there is a loop.
+	
+	In every hasCircle(currNode, parent, adj) method call do below
+	if this node is visited, return true
+	mark current node as visited
+	for all neighbors
+		if neighbor is not parent
+			if hasCircle(nei, currNode, adj), return true
+	return false
+
+Time Complexity : O(V+E)
+Space Complexity : O(V)
+
+Number of Components :- 
+	
+	Running DFS on a node of one component won't mark nodes of other components as visited. Thus, if we run dfs on one node and set count=1, then loop through the visited array for other nodes and whenever we find an unvisited node we run DFS on it and increase count, we will have the component count.
+			
+Time Complexity : O(V+E)
+Space Complexity : O(V)
+
+Topological Sort :-
+	
+	Topological sorting is a linear ordering of vertices in a Directed Acyclic Graph (DAG) such that for every directed edge u->v from vertex `u` to vertex `v`, `u` comes before `v` in the ordering. It's essentially a way of arranging tasks in order of their dependencies
+	
+	Kahn's Algo : The idea is to maintain in-degree of every node. The nodes having in-degree 0 can be added to the sorted list. If we start bfs traversal from these nodes, and keep decreasing the indegree of neighbor nodes, when the indegree of a neighbor node is 0, we can add that to the sorted list. Note that we do not need a visited array, our traversal is based on in-degree count alone.
+	
+	create resultList
+	create in-degree array 
+	create q for BFS
+	fill in-degree array
+	enqueue nodes with 0 in-degree
+	while(!q.isEmpty())
+		currNode = q.poll()
+		add currNode to resultList
+		for all neighbors
+			decrease in-degree
+			if nei in-degree is 0
+				enqueue nei
+	return resultList
+	
+	DFS PostOrder : If we reverse the postOrderTraversal of a DAG, we get the topo sorted list.
+	
+	public static void dfsTopo(
+				int start, int[][] graph, 
+				List<Integer> res,
+				boolean[] visited
+			) 
+	{	
+		if(visited[start]) return;
+		visited[start]=true;
+		for(int nei : graph[start]) dfsTopo(nei, graph, res, visited);
+		res.add(start);
+	}
+	
+Time Complexity : O(V+E)
+Space Complexity : O(V)
+
+----------Clone Graph----------------
+Sol1(Recursive DFS) -> Use HashMap to store copy of every node. In each call, we make a copy of current node and put it in the map. Thus, we can use the map for checking if a node is already visited. Thus, visited array is not required. So, the marking step in DFS will be to create a copy of the node and adding in hashmap. When calling dfs for all neighbors, add the return value (copy of the neighbor) to the neighbors list of the copy of the current node. After calling dfs for all neighbors, return the copy of the current node
+
+Modified-Recursive DFS :-
+	create HashMap to store copied nodes
+	In each dfs method call
+		if copy of current node is present in copy map
+			return copyMap.get(node)
+		create copy of current node (newNode) and add it in the copy map
+		for all neighbors
+			newNode.neighbors.add(dfs(neighbor, adj, visited))
+		return newNode
+
+
+Sol2(BFS/Stack based DFS)-> Use HashMap to store copy of every node. Whenever a node is visited, we make a copy of it and put it in the map. Thus, we can use the map for checking visited. Thus, visited array is not required. So, the marking step in BFS/DFS will be to create a copy of the node and adding in hashmap. For the current node as the processing step, add copies of all neighbors to the copy of current node. 
+
+	
+Modified-BFS :- 
+
+	create HashMap to store copied nodes
+	create queue
+	enqueue starting node
+	create copy of starting node & add into copy map
+	while q is not empty
+		get node n from queue
+		for all neighbors of n
+			if neighbor node is there in copy map (then it is visited)
+				set newNode=copy.get(neighbor)
+			else
+				add neighbor node into q
+				newNode = create copy of neighbor node
+				add copy of neighbor node(newNode) into copy map 
+			get copy of n from map, and add copy of neighbor as it's neighbor (Processing)
+	return copy.get(node)
+
+Modified-DFS(Stack):
+	create HashMap to store copied nodes
+	create stack
+	push starting node into stack
+	create copy of starting node and add into copy map
+	while stack is not empty
+		currNode=stack.pop()
+		for all neighbors of n
+			if neighbor node is there in copy map (then it is visited)
+				set newNode=copy.get(neighbor)
+			else
+				push neighbor node into stack
+				newNode = create copy of neighbor node
+				add copy of neighbor node(newNode) into copy map 
+			get copy of n from map, and add copy of neighbor as it's neighbor (Processing)
+	return copy.get(node)
+	
+Time Complexity : O(V+E)
+	 Node processing is O(V) and traversing through all neighbors of all nodes together is O(E). Thus, net time complexity is O(V+E)
+Space Complexity : O(V)
+	Extra space required is only for HashMap for storing copies O(V) and recursion stack/stack/queue O(V).
+		
+		
+-------------Course Schedule--------------------
+Intuition : If we represent courses in terms of nodes and dependencies in terms of edges then we can't do courses which are in a loop or circle. Note, there can be multiple components in the dependency graph. Thus, we need to find if any of the components has a circle. If yes, we can't do all courses. Else, we can.
+
+
+	
+Time Complexity : O(V+E)
+Space Complexity : O(V+E)
+	for visiting array O(V), Stack O(V) and for adj list O(E)
+	
+------------Pacific Atlantic Water Flow---------------
+Intuition : The left and top most squares are reachable from Pacific and bottom and right most squares are reachable from atlantic. Think of squares as nodes of a graph. If we start from these nodes and traverse through neighbor squares with the condition that a neighbor must have higher height. We can mark all nodes which are reachable from pacific and then from atlantic. If a node is reachable from both, we can add that in the result.
+
+Sol1(BFS):-
+
+	create two 2d boolean arrays of size m*n to mark reachable nodes. pacificReachable & atlanticReachable
+	create two Queue<int[]> for bfs. pacificQueue & atlanticQueue.
+	add all left & top most nodes to pacificQueue & mark reachable.
+	add all right & bottom most nodes to atlanticQueue & mark reachable.
+	do bfs twice with respective queue & reachable array to fill reachable arrays
+	if for any i & j, both reachable array contains true, add List.of(i,j) to result
+	
+Sol2(DFS) :-
+
+	create 2d boolean arrays of size m*n pacificReachable & atlanticReachable
+	for all left most & top most nodes call dfs with pacificReachable
+	for all right most & bottom most nodes call dfs with atlanticReachable
+	if for any i & j, both reachable array contains true, add List.of(i,j) to result
+
+Time Complexity : O(M*N)
+Space Complexity : O(M*N)
+	
+-------------------Number of Islands------------------
+Intuition : consider a square/pos as a node & the node above, right, bottom and left if having value '1', as neighbors. From any index i,j where the value of grid[i][j]='1', traverse all neighbors. For marking visited use the grid itself and mark '1' to '0' for marking as visited. The number of times we find a '1' in grid, is the number of islands/components.
+
+Sol(DFS)-> 
+	
+	set numberOfIslands=0
+	for all i & j
+		if grid[i][j]=='1'
+			increase numberOfIslands
+			call dfs on (i,j) to visit and mark all connected positions '0'
+	return numberOfIslands
+	
+	In method dfs :-
+	
+		if grid[i][j]=='0' return
+		set grid[i][j]=='0'
+		set paths = { {1,0}, {-1,0}, {0,1}, {0,-1} };
+		for all path
+			construct neighbor index values, (a,b)
+			if (a,b) is valid pos
+				dfs(a,b)
+				
+Time Complexity : O(M*N)
+Space Complexity : O(M*N)
+	We can reuse the grid for marking visited. But need space for the recursion stack
+				
+------------------Longest Consecutive Sequence-----------------
+
+Sol1-> If for any nums[i] nums[i]-1 is not present, then nums[i] is the starting of a consecutive sequence. if nums[i]+1 is presnt, length will be atleast 2, is nums[i]+2 is present length will be atleast 3..for checking whether a value is present efficiently, we can use a set.
+
+	create a set and add all values
+	max=1
+	for all nums[i]
+		if nums[i-1] is not present
+			candMax=1 j=i+1
+			while(set contains j) candMax++; j++;
+			if candMax>max max=candMax
+	return max
+
+Sol2(DFS) -> Consider a number as a node. its neighbors are consicutive numbers, i+1 and i-1 (if present). Use set to efficiently check the existience of a number and to mark a node visited.
+
+	create a set of numbers, numSet
+	create a set for marking nodes visited, visited
+	set maxLen=1
+	for all num[i]
+		if num[i] is not visited
+			maxLen = max(maxLen, dfs(num[i], numSet, visited))
+	return maxLen 
+	
+	DFS(start, numSet, visited) method :
+	if start is visited, return 0
+	mark start as visited
+	set len = 1
+	if start+1 is present and not visited, len+=dfs(start+1,numSet,visited)
+	if start-1 is present and not visited, len+=dfs(start-1,numSet,visited)
+	return len
+	
+Time Complexity : O(N)
+Space Complexity : O(N)
+	
+------------------Alien Dictionary----------------
+https://www.geeksforgeeks.org/problems/alien-dictionary/1
+
+Intuition-> for any two consicutive words, w1 & w2, for the lowest index (say i) character which is not same, the char at w1 comes before w2. We can represent this as an edge , w1.charAt(i) -> w2.charAt(i). If we create adj list for all charecters, and get topologically sorted string, we will get the characters in ascending order. We can use both BFS (Kahn's) and DFS(Reverse of Postorder) for the topological sort.  There can be multiple components. In case of DFS we need to handle that by calling dfs for all unvisited node.
+
+Sol1 (Kahn's)->
+
+	if there is only one word
+		if there is only one char, return the only word
+		no ordering is possible, return ""
+	Create a Character set, alphaSet
+	for all words
+		for all chars
+			add char to alphaSet
+	create Map for storing neighbors of all alpha, adjMap
+	create Map for storing indegree of all alpha, indegreeMap 
+	for all alpha in alphaSet
+		add blank list to adjMap
+		put indegree value 0 in indegreeMap
+	for i as 1 to N-1
+		find minLen of dict[i-1] & dict[i], minLen
+		for j, 0 to minLen-1
+			if char at index j is same at both words, do j++
+		if j==minLen (the shorter word length), continue
+		add dict[i-1].charAt(j) -> dict[i].charAt(j) edge in adjMap
+		increase indegree count for dict[i].charAt(j)
+	// now the adjMap & indegreeMap is ready
+	use topoSort to get orderedString
+	if(orderedString.len!=K) return "";
+	return orderedString
+	
+Time Complexity : O(NuberOfWords*len)+O(NumberOfAlphabets+NumberOfRelations)
+	‘len’ is the max length up to the index where the first inequality occurs
+Space Complexity : O(NumberOfAlphabets+NumberOfRelations)
+		
+-------------------Graph Valid Tree---------------------
+Intuition -> If a graph has no loops & has only 1 component, it is a tree.
+
+Time Complexity : O(V+E)
+Space Complexity : O(V)

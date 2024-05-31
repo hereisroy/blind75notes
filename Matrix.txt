@@ -1,0 +1,59 @@
+-------Set Matrix Zeroes---------
+Intuition : For all rows & all columns we need to store whether it needs to be zeroed or not. We need an array of size m for marking rows, and an array of size n for marking columns. To do this in place, we can use the first row of size n, for marking columns and the first column of size m to mark rows. Only 0,0 position is being used to mark two diff things, thus we need to use one variable, say firstRow to mark the first row. As we traverse the matrix left to right, then top to bottom, Any marking position is checked before it can be updated because of other positions. Not causing any loss of required data. Apply firstRow at the last.
+
+Time Complexity : O(M*N)
+Space Complexity : O(1)
+
+------------Spiral Matrix---------------
+Intuition : Use top, left, right and bottom pointers. After traversing top row, increase top. After traversing right column, decrease right, after traversing bottom row increase bottom & after traversing left column, increase left. Keep going till top<=bottom & left<=right. Think carefully of the edge case of a matrix having 1 row or 1 column. In those cases, use top<=bottom check to prevent 2nd time row traversal & use left<=right check to prevent 2nd time column traversal.
+
+Time Complexity : O(M*N)
+Space Complexity : O(1)
+
+------------Rotate Image--------------
+Intuition : Transpose matrix & reverse every row. 
+
+Transposing Matrix : Transposing a matrix is making the rows->columns and the columns->rows. We split the matrix by the main diagonal (j=i+1) and for every item on one side swap mat[i][j] with mat[j][i].
+
+Time Complexity : O(M*N)
+Space Complexity : O(1)
+
+-------------Word Search-------------
+Intuition : We can use dfs from a cell to check if we can construct the given word from it. In the DFS we mark a cell as visiting by setting its value to # and after its neighbors have been traversed we restore the value.
+
+	public boolean dfs(int i, int j, char[][] board, String word, int index){
+        if(index==word.length()) return true;
+        int m=board.length, n=board[0].length;
+        if(i<0 || i>=m || j<0 || j>=n || board[i][j]!=word.charAt(index))
+            return false;
+        char tmp = board[i][j];
+        board[i][j]='#';
+        int[][] paths = {{1,0}, {-1,0}, {0,1}, {0,-1}};
+        
+        for(int[] path : paths){
+            if(dfs(i+path[0], j+path[1], board, word, index+1))
+                return true;
+        }
+        board[i][j]=tmp;
+        return false;
+    }
+	
+Optimization by checking character count : The board must have ample characters to construct the word. If not we can return false;
+
+	public boolean isValid(char[][] board, String word){
+        int m=board.length, n=board[0].length;
+        if(word.length()>m*n) return false;
+        int[] charCount = new int[128];
+        for(int i=0;i<m;i++)
+            for(int j=0;j<n;j++) charCount[board[i][j]]++;
+        for(int i=0;i<word.length();i++) {
+            charCount[word.charAt(i)]--;
+            if(charCount[word.charAt(i)]<0) return false;
+        }
+        return true;
+    }
+	
+Time Complexity : O(M*N*4^L)
+	 checking if we can contruct the word from a cell takes O(4^L) time as the dfs call for 2nd level has 4 options to check, then at 3rd level has 4^2 options, at 4th level has 4^3 options....at level L-1, has 4^(L-1) options.
+Space Complexity : O(L)
+	For recursion stack

@@ -1,0 +1,92 @@
+----------Climbing Stairs-----------
+https://leetcode.com/problems/climbing-stairs/description/
+v : https://www.youtube.com/watch?v=Y0lT9Fck7qI
+Sol1 (Tabulation)-> From any stair i we can only go to the i+1 and i+2 stair. So, ways(i) = ways(i+1) + ways(i+2). Using bottom-up approach, ways(n)=1 & ways(n-1)=1, then ways(n-2)=ways(n-1)+ways(n)...
+
+Time Complexity : O(n)
+Space Complexity : O(1)
+
+-----------Coin Change--------------
+https://leetcode.com/problems/coin-change/description/
+v : https://www.youtube.com/watch?v=H9bfqozjoqs
+Sol1(Memoization)-> for all available coins do fn(target)=min(1+fn(target-coinValue)). If target=0 return 0, if target<0 return -1. If no fn(target-coinValue) returns 0, return -1 for fn(target). Use caching (memoization) for fn(target-coinValue).
+Sol2 (Tabulation)-> dp[0]=0, for target=i if no coinValue<=i, dp[i]=-1, if(i>=coinValue && dp[i-coinValue]>-1) dp[i]=min(1+dp[i-coinValue]). Use bottom-up (Tabulation) to find dp[1],dp[2]...dp[i].
+
+Time Complexity : O(target*numberOfCoins)
+Space Complexity : O(target)
+
+-----------------Longest Increasing Subsequence----------------
+https://leetcode.com/problems/longest-increasing-subsequence/description/
+v : https://www.youtube.com/watch?v=cjWnW0hdF1Y
+Sol1 (Tabulation) -> for any number at index i, the LIS length when including that number is 1 + max of the length of all pre-subsequenses where the last number is lesser than n(i). And the base case is that dp[0]=1. Once we fill dp[0] to dp[n-1], the maximum number in dp is the LIS length of the whole array.
+
+Time Complexity : O(n2)
+Space Complexity : O(n)
+
+Sol1 (dp+binarySearch): dp[i] will represent the smallest possible tail value of all increasing subsequences of length i. dp[0]=nums[0], if nums[i]>dp[tail] then add nums[i] to dp, else replace the first larger number in dp with nums[i].
+
+Time Complexity : O(n*logn(n))
+Space Complexity : O(n)
+
+
+----------Longest Common Subsequence-----------
+https://leetcode.com/problems/longest-common-subsequence/description/
+Sol (Tabulation)-> Build a 2d table dp of size [n1+1][n2+1]. Where dp[i][j] stores the length of the LCS of text1.subStr(i) and text2.subStr(j). 
+	
+	Fill the last row and column of dp with 0
+	if text1.charAt(i)==text2.charAt(j) -> dp[i][j]=dp[i+1][j+1]
+	else dp[i][j]=Max(dp[i+1][j], dp[i][j+1])
+	Set i=n1-1,j=n2-1 and fill dp's ith row(right to left) and jth column(bottom to top). Do i--,j-- until i<0 || j<0
+	dp[0][0] denotes the length of LCS between text1 & text2 
+	
+Time Complexity : O(n2)
+Space Complexity : O(n2)
+
+-----------Word Break------------------
+https://leetcode.com/problems/word-break/description/
+Sol (Tabulation)-> Go right->left, use a boolean array dp where dp[i] indicates whether the substring s[i:n-1] can be segmented into dictionary words. Any dp[i]=true if str at that offset starts with a word and i+len(word)=len(str) or dp[i+len(word)]=true
+
+Time Complexity : (lengthOfStr^2*lengthOfDict)
+Space Complexity : O(lengthOfStr)
+
+---------------Combination Sum IV---------------
+https://leetcode.com/problems/combination-sum-iv/description/
+Idea -> ways(i)=ways(i-nums[j]) & ways(0)=1
+Sol (Tabulation) -> create array dp, where dp[i] is the number of number of possible combinations that add up to i. dp[0]=1. 
+
+	for i, 1 to target
+	set dp[i]=0
+		for j, 0 to nums.length
+		if nums[i]<=i, dp[i]+=dp[i-nums[j]]
+	return dp[target]
+
+Time Complexity : (target*lenOfNums)
+Space Complexity : O(target)
+	
+------------House Robber-------------------
+https://leetcode.com/problems/house-robber/description/
+Sol -> dp[i]=max(nums[i]+dp[i+2], dp[i+1]). dp[n-1]=nums[n-1], dp[n-2]=max(nums[n-1], nums[n-2])
+House Robber II -> As we can not take 0th and n-1th at the same time, ans = max(ans(0,n-2), ans(1,n-1))
+
+Time Complexity : (numberOfHouses)
+Space Complexity : O(1)
+
+----------------Decode Ways---------------
+-> dp[i]=0, if(s.charAt(i)!='0') dp[i]+=dp[i+1], if(s.charAt(i)!=0 && (s.charAt(i)-48)*10+s.charAt(i+1)-48<27) dp[i]+=dp[i+2]. figure dp[n-1] & dp[n-2] and use then to loop to the value of dp[0]
+
+Time Complexity : (strLen)
+Space Complexity : O(1)
+
+-----------------Unique Paths-------------------
+
+Sol -> For any position (i,j), robo can only move to right & bottom. It is of course possible to go to the finish pos (n-1, m-1) from the finish pos, thus, dp[m-1][n-1]=1. And From outside of the matrix, we can not reach the finish pos. So, If we create a matix of size m+1*n+1 and fill the last row and column (denoting outside the grid) with 0, then dp[i][j]=dp[i+1][j]+dp[i][j+1].
+
+Time Complexity : (m*n)
+Space Complexity : O(m*n)
+
+---------------Jump Game------------------
+
+-> At a given index i, if nums[i]=j, we can jump 1pos, 2pos.. at max j postions. So, there is no concern of jumping over the target. Question is can we cover the distance with jump. Maintain a target index, traverse the array from right to left if from any index we can cover the distance to target, move target to that index. At last check if target==0.
+
+Time Complexity : (n)
+Space Complexity : O(1)
