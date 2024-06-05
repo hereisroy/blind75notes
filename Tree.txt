@@ -1,0 +1,322 @@
+Important Algorithms :- DFS, PreOrder, InOrder & PostOrder traversal both using recursion & iteration. BFS/Level Order Traversal. 
+
+Pre-order Traversal : traversing in root->left->right manner. When using recursion, If we add current node value first then call dfs(node.left) & then call dfs(node.right). We will get preorder traversal. When using iteration, first push the root node in the stack as the setup step. Then loop until stack is empty. Get node using stack.pop(). Add the current node first, then add the right node and left node. As the stack is LIFO, we push the left after right.
+
+	Recursive DFS Method
+		public void dfs(TreeNode node, List<Integer> res){
+        if(node==null) return;
+        res.add(node.val);
+        dfs(node.left, res);
+        dfs(node.right, res);
+	}
+	
+	Iterative Method
+		public List<Integer> preorderTraversal(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+        if(root==null) return res;
+        Deque<TreeNode> stack = new LinkedList<>();
+        stack.push(root);
+        TreeNode node;
+        while(!stack.isEmpty()){
+            node = stack.pop();
+            res.add(node.val);
+            if(node.right!=null) stack.push(node.right);
+            if(node.left!=null) stack.push(node.left);
+        }
+
+        return res;
+    }
+
+Time Complexity : O(N)
+Space Complexity : O(H)
+	H=LogN when the tree is balanced.In the worst case, in a unbalanced tree (LinkedList), H=N
+
+In-order traversal : Traversing in left->root->right manner. In the recursive approach, we call dfs(node.left) then do res.add(node.val) then do dfs(node.right), we'll get inorder traversal. In the iterative approach, we use a stack & a currentNode variable. Initially node is set to root. As long as node is not null we push node into stack and make node=node.left. When there are no more left child, node is null, we take out the top element from stack and add it to the result. As for that node there are no left nodes. Then we do the same for the right node by setting node=node.right.
+
+	Recursive DFS Method
+		public void dfs(TreeNode node, List<Integer> res){
+        if(node==null) return;
+        dfs(node.left, res);
+		res.add(node.val);
+        dfs(node.right, res);
+	}
+	
+	Iterative Method
+		public List<Integer> inorderTraversal(TreeNode root) {
+			List<Integer> res = new LinkedList<>();
+			Deque<TreeNode> stack = new LinkedList<>();
+			TreeNode node = root;
+			while(!stack.isEmpty() || node!=null){
+				while(node!=null){
+					stack.push(node);
+					node=node.left;
+				}
+				
+				node = stack.pop();
+				res.add(node.val);
+				node=node.right;
+			}
+
+			return res;
+		}
+		
+Time Complexity : O(N)
+Space Complexity : O(H)
+	H=LogN when the tree is balanced.In the worst case, in a unbalanced tree (LinkedList), H=N
+		
+PostOrder Traversal : traversing in left->right->root order. For a graph it is traversing node after traversing all neighbors. In recursive approach, we can call dfs(node.left), dfs(node.right) and then res.add(node.val). In the iterative approach, we use a stack, push the root as the setup and start looping until stack is empty. We take out top element from stack and add it to the start of the result. We need to use a LinkedList for the result. Then we add the left and right child of of the node to the stack. As the stack is LIFO, we get the elements in root->right->left order and as we are adding at the start, the resulting order is left->right->root.
+
+	Recursive DFS Method
+		public void dfs(TreeNode node, List<Integer> res){
+        if(node==null) return;
+        dfs(node.left, res);
+		dfs(node.right, res);
+		res.add(node.val);
+	}
+	
+	Iterative Method
+		public List<Integer> postorderTraversal(TreeNode root) {
+			List<Integer> res = new LinkedList<>();
+			if(root==null) return res;
+			Deque<TreeNode> stack = new LinkedList<>();
+			stack.push(root);
+			TreeNode node;
+			while(!stack.isEmpty()){
+				node = stack.pop();
+				res.addFirst(node.val);
+				if(node.left!=null) stack.push(node.left);
+				if(node.right!=null) stack.push(node.right);
+			}
+
+			return res;
+		}
+		
+Time Complexity : O(N)
+Space Complexity : O(H)
+	H=LogN when the tree is balanced.In the worst case, in a unbalanced tree (LinkedList), H=N
+		
+LevelOrder Traversal (BFS) : In BFS we use a queue. Initially we add the root into the queue. Then until the queue is empty we take out & process a node and add its children to the queue. Although we traverse level wise, to construct different lists for different level we need to loop through all elements of a level seperately. Thus, we use two loops. Until the q is emtpy, we check its size(say n). Create a list of the size of the queue. Take out & process n(size of the queue) nodes and enqueue their children. Note that the size of the queue increases as we put the child nodes into it, but we keep the initial size of the queue in a variable in each iteration, which is the size of the level and we traverse that much only in one iteration of the inner loop.
+
+	Code exmaple
+		public List<List<Integer>> levelOrder(TreeNode root) {
+			List<List<Integer>> res = new LinkedList<>();
+			if(root==null) return res;
+			Queue<TreeNode> q = new LinkedList<>();
+			q.add(root);
+			List<Integer> currlevel;
+			int levelSize;
+			TreeNode node;
+			while(!q.isEmpty()){
+				levelSize = q.size();
+				currlevel = new LinkedList<>();
+				for(int i=0;i<levelSize;i++){
+					node = q.poll();
+					currlevel.add(node.val);
+					if(node.left!=null) q.add(node.left);
+					if(node.right!=null) q.add(node.right);
+				}
+				res.add(currlevel);
+			}
+
+			return res; 
+		}
+
+Time Complexity : O(N)
+Space Complexity : O(N)
+	As there can be upto N/2 nodes in the last level and at any time, the size of the bfs queue is proportional to this
+		
+--------------------Same Tree-----------------
+Intuition : If the value of root1 & root2 is same, the left sub tree is same & the right sub tree is same the trees are same. If both roots are null they are same. If only one of them is null, they are not same. Using these conditions we can recursively find out if the trees are same.
+
+	Code Example
+		public boolean isSameTree(TreeNode p, TreeNode q) {
+			if(p==null && q==null) return true;
+			if(p==null || q==null) return false;
+			if( p.val==q.val &&
+				isSameTree(p.left, q.left) &&
+				isSameTree(p.right, q.right)) return true;
+			return false;
+		}
+
+Time Complexity : O(N)
+Space Complexity : O(H)
+	H=LogN when the tree is balanced.In the worst case, in a unbalanced tree (LinkedList), H=N
+		
+-----------------Invert Binary Tree------------------
+Intuition : Use Recursion. If root==null, return. Else first run invert on both sub trees. Then swap left child with right child. Return root.
+
+Time Complexity : O(N)
+Space Complexity : O(H)
+	H=LogN when the tree is balanced.In the worst case, in a unbalanced tree (LinkedList), H=N
+
+------------------Binary Tree Maximum Path Sum----------------
+Intuition : As per the question's defination of a path, there can be a path as left->root->right for a tree. But this splitting can be done only once in a path that too from the starting point. As per the question the path can start from any node. So, at any node there are two things to consider. One is the maxSum if we consider it as the staring point (we can split = use left->root->right), that would be node.val+leftMax+rightMax (when leftMax & rightMax is negative we set it to 0 beforehand). Secondly, if we do not consider the current node as the starting point then, the parent node's mehod call can use the max pathSum value we can get starting at this node and not splitting. That is node.val+max(leftMax, rightMax). Using this, we can calculate the maxPathSum when we are staring at every node. We can keep a global var or use params for the maxPathSum and compare it with node.val+leftMax+rightMax for every node and keep the max. This would be the result. The returning value of the dfs is just helping ansestar method calls to calculate the candMax.  
+
+	DFS Method [res is globally declared inside the class]
+		public int dfs(TreeNode node){
+			if(node==null) return 0;
+			int leftMax = Math.max(dfs(node.left), 0),
+				rightMax = Math.max(dfs(node.right), 0),
+				candMax = node.val+leftMax+rightMax;
+			res = Math.max(res, candMax);
+			return node.val+Math.max(leftMax, rightMax);
+		}
+
+Time Complexity : O(N)
+Space Complexity : O(H)
+	H=LogN when the tree is balanced.In the worst case, in a unbalanced tree (LinkedList), H=N
+	
+----------------Serialize and Deserialize Binary Tree-------------------
+Intuition (BFS) : Lets say we use BFS/Level order traversal and create a string. We seperate values of nodes using ',' and use use '#' for denoting a null node. At each level we won't have 2^(L-1) entries. As the tree might not be balanced. In this case, the challange seems to be determining the parent child relationship of the nodes. If we create the root node at first and add it to the queue. And loop until the queue is empty just like a classic BFS, before the first iteration, we have to set i=1. Then, the element we pop from the queue is the parent, and the Tree representation at index i of the encoded array is its left child. After processing the left child and adding in into the queue we can increase i to point to the right child. In every pass, the node taken out from queue is the parent and the string pointed by i and i+1 are the string representation of its children.
+
+	Example Decode code
+		public TreeNode deserialize(String data) {
+			String[] encoded = data.split(",");
+			int n = encoded.length, i=1;
+			if(encoded==null || encoded[0].equals("#")) return null;
+			Queue<TreeNode> q = new LinkedList<>();
+			TreeNode root = new TreeNode(Integer.parseInt(encoded[0]));
+			q.add(root);
+			TreeNode parent, leftNode, rightNode;
+			while(!q.isEmpty()){
+				parent = q.poll();
+				if(!encoded[i].equals("#")){
+					leftNode = new TreeNode(Integer.parseInt(encoded[i]));
+					parent.left=leftNode;
+					q.add(leftNode);
+				}
+				i++;
+				if(!encoded[i].equals("#")){
+					rightNode = new TreeNode(Integer.parseInt(encoded[i]));
+					parent.right=rightNode;
+					q.add(rightNode);
+				}
+				i++;
+			}
+
+			return root;
+		}
+		
+Time Complexity : O(N)
+Space Complexity : O(N)
+	As there can be upto N/2 nodes in the last level and at any time, the size of the bfs queue is proportional to this. Also, if we count for the result string or the newly created tree, the complexity becomes O(N)
+		
+Intuition (PreOrder) : doing preorder traversal on the encoded string and increasing the value of i at every dfs call, lets us point to the every node and its children. 
+
+	Code example
+		public TreeNode dfsDecode(String[] data){
+			if(data[i].equals("N")){
+				i++; return null;
+			}
+			TreeNode node = new TreeNode(Integer.parseInt(data[i++]));
+			node.left = dfsDecode(data);
+			node.right = dfsDecode(data);
+			return node;
+		}
+Time Complexity : O(N)
+Space Complexity : O(H)
+	H=LogN when the tree is balanced.In the worst case, in a unbalanced tree (LinkedList), H=N. Also, if we count for the result string or the newly created tree, the complexity becomes O(N)
+	
+------------------------Subtree of Another Tree--------------------
+Intuition : If any subtree of the main tree is the same as the other tree then other tree is a sub tree. We can do a traversal of the main tree and for each node check if is it is same with the other tree.
+
+	code example
+		public boolean isSubtree(TreeNode root, TreeNode subRoot) {
+			if(root==null) return false;
+			if(isSameTree(root, subRoot)) return true;
+			return isSubtree(root.left, subRoot) || isSubtree(root.right, subRoot);
+		}
+		
+Time Complexity : O(N*M)
+Space Complexity : O(N)
+
+---------Construct Binary Tree from Preorder and Inorder Traversal----------
+Intuition : We have the preorder array without the null values (leaf node children). Without the null values we don't know if any node does not have any children. If we traverse the array in preorder, we will get a complete binary tree with the values. Which might not be the correct tree. For any node, we need to know whether it has left & right child or not. For any node as root, if we have the inorder traversal of the sub tree it denotes, from that we can get this info. If we get the index of the root node in the inorder sub-array, we can count & check if there are elements at the left & right side. Then, we'll know that the next two values in the preorder array are indeed node's left & right child. But, for every node we need to maintain the inorder sub array or to be specific, the bounds(left & right indexes). When doing the preorder traversal on the preorder array, we can find the index of the value/root, this will mark the (end+1)th index for the inorder sub-array of the left child & (start-1)th index for the inorder sub-array of the right child. Thus, in every dfs call we can pass the appropriate bounds of the inorder sub-array. In every dfs call, we need to find the index of the root's value in the inorder sub-array. This will take O(N) time if we do linear search. Instead, we can use a HashMap to store values & their indexes and use that in the dfs call. As the base case of the preorder traversal, if the length of the inorder sub-array of a node is 1, we do not need to call dfs on it's children. Note that, in case there are two nodes in the inorder sub array for a root, then one is the root itself and one is either left or right child. In such case, we will make one call to dfs with invalid inorder bounds. Thus on every call we need to check if inStart>inEnd (no element in the inorder array, return null).
+
+	Code Example
+		HashMap<Integer, Integer> inMap = new HashMap<>();
+		int preIndex=0;
+		public TreeNode buildTree(int[] preorder, int[] inorder) {
+			for(int i=0;i<inorder.length;i++)
+				inMap.put(inorder[i], i);
+			return dfs(preorder, 0, inorder.length-1);
+		}   
+
+		private TreeNode dfs(int[] pre,int inStart, int inEnd)
+		{   
+			if(inStart>inEnd) return null;
+			if(inStart==inEnd)
+				return new TreeNode(pre[preIndex++]);
+			int val = pre[preIndex++];
+			TreeNode node = new TreeNode(val);
+			int index = inMap.get(val);
+			node.left = dfs(pre, inStart, index-1);
+			node.right = dfs(pre, index+1, inEnd);
+			return node;
+		}
+
+Time Complexity : O(N)
+Space Complexity : O(N)
+	For the HashMap & the call stack
+	
+---------------Validate Binary Search Tree--------------
+Intuition : Every node puts a constraint on its sub trees. A max constraint on the left subtree and a min constraint on the right subtree. As for any node there might have been right and left turns in the path, there can be a max & min constraint. We can thus initially call dfs with a min_value constraint lesser than any possible node & a max_value constraint greater than any possible node. Then while doing pre-order traversal when going left put the root value as the max constraint & when going right put the root value as min constraint.
+
+	Code Example
+		public boolean isValidBST(TreeNode root) {
+			if(root==null) return true;
+			return dfs(root,Long.MIN_VALUE,Long.MAX_VALUE);
+		}
+
+		private boolean dfs(TreeNode node, long min, long max){
+			if(node==null) return true;
+			if(node.val<=min || node.val>=max) return false;  
+			return dfs(node.left, min, node.val) && dfs(node.right, node.val, max);
+		}
+		
+Time Complexity : O(N)
+Space Complexity : O(H)
+	Space required for call stack. For a linear tree O(N). For a balanced tree O(LogN).
+		
+----------------Kth Smallest Element in a BST-----------------
+Intuition : In a binary tree, the inorder traversal gives us the sorted nodes. The ith value in the inorder traversal is the ith smallest number.
+
+	Code Example
+		int res, count=0;
+		public int kthSmallest(TreeNode root, int k) {
+			dfs(root,k);
+			return res;
+		}
+
+		public void dfs(TreeNode node, int k){
+			if(node==null) return;
+			dfs(node.left, k);
+			count++;
+			if(count==k) {
+				res = node.val;
+				return;
+			}
+			dfs(node.right, k);
+		}
+		
+Time Complexity : O(N)
+Space Complexity : O(H)
+	Space required for call stack. For a linear tree O(N). For a balanced tree O(LogN).
+	
+------------------Lowest Common Ancestor of a Binary Search Tree----------------
+Intuition : If p & q are at different sides of the root, then root is the LCA. If p or q is equal to root, root is the LCA. Else call fn() on the appropriate subtree.
+
+	Code Example
+		public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+			if(p.val>root.val && q.val<root.val) return root;
+			if(p.val<root.val && q.val>root.val) return root;
+			if(p.val==root.val || q.val==root.val) return root;
+			if(p.val>root.val) return lowestCommonAncestor(root.right, p, q);
+			else return lowestCommonAncestor(root.left, p, q);
+		}
+		
+Time Complexity : O(H)
+Space Complexity : O(H)
+
+--------------------Implement Trie (Prefix Tree)--------------
+See Trie in details

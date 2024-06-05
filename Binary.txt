@@ -1,29 +1,42 @@
 -----------Sum of Two Integers------------
 https://leetcode.com/problems/sum-of-two-integers/description/
 v : https://www.youtube.com/watch?v=qq64FrA2UXQ
--> a^b gives sum, a&b gives carry. Keep adding sum with carry until carry is 0.
+-> a^b gives sum, a&b<<1 gives carry. Keep adding sum with carry until carry is 0.
+
+Time Complexity : O(log(max(a,b)))
+Space Complexity : O(1)
 
 -----------Number of 1 Bits/Hamming weight-------------
 https://leetcode.com/problems/number-of-1-bits/description/
 v : https://www.youtube.com/watch?v=nttpF8kwgd4&t=1884s
 -> n & (n-1) unsets the rightmost bit . Check how many times we need to unset the rightmost to make n=0.
 
+Time Complexity : O(log(n))
+Space Complexity : O(1)
  
 ------Counting Bits--------
 https://leetcode.com/problems/counting-bits/description/
 v : https://www.youtube.com/watch?v=RyBM56RIWrM
-Tabulation -> traverse 2 -> n . count[i]=1+count[i-offset] where offset is the largest number which is a power of 2 encountered so far. To find the next offset check count[i]==offset*2
+Tabulation -> traverse 2 -> n . count[i]=1+count[i-offset] where offset is the largest number which is a power of 2 encountered so far. To find the next offset check i==offset*2
 
-Intuition -> As offset or the highest number < i which is a power of 2, is represented using a single set bit, dp[i]=1+dp[i-offset] 
+Intuition -> Offset is the highest number <= i which is a power of 2. In Binary it is represented using a single set bit. For Example, 2=10, 4=100 & 8=1000. Notice that for any number, say 5, the number of 1s required in the binary representation= (bits required to represent 4) + (bits required to represent 1). Similarly, bits(11)=bits(8)+bits(3), as we know that offsets can be represented using a single bit, bits(11)=1+bits(3). So, bits(i)=1+bits(i-offset). If we hardcode bits(0)=0, we can traverse from 1 to n and using this relation fill an array with bits(i), then array[n] will give us the ans.
+
+Time Complexity : O(n)
+Space Complexity : O(1)
 
 --------Missing Number---------
 https://leetcode.com/problems/missing-number/description/
 v : https://www.youtube.com/watch?v=WnPLSRLSANE
 Sol1 : find the sum of the range. Substract the sum of the array from it.
-Sol2 : do xor of all elements in array and all emements of the range. the result is the missing element.
-Sol3 : if x is present, add n+1 to the element at index x. check which index has value<n+1.
+Sol2 : do xor of all elements in array and all emements of the range. the result is the missing element. As xor of the same number is 0.
+
+Time Complexity : O(n)
+Space Complexity : O(1)
 
 ---------Reverse Bits-----------
 https://leetcode.com/problems/reverse-bits/description/
 v : https://www.youtube.com/watch?v=UcoN6UjAI64
--> do n&check (check=1) to check if a bit is set. Do check<<1 after each step to check more significant bit. Set res=0, then do res|=1 if a bit is set and do res<<1 to construct the result.
+-> set check=1. Do n&check to check if right most bit is set. Do check<<1 after each step & then do n&check to check more significant bits. Set res=0, then do res|=1 if a bit is set and do res<<1 to construct the result.
+
+Time Complexity : O(log(n))
+Space Complexity : O(1)

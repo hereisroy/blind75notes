@@ -18,12 +18,12 @@ Space Complexity : O(target)
 -----------------Longest Increasing Subsequence----------------
 https://leetcode.com/problems/longest-increasing-subsequence/description/
 v : https://www.youtube.com/watch?v=cjWnW0hdF1Y
-Sol1 (Tabulation) -> for any number at index i, the LIS length when including that number is 1 + max of the length of all pre-subsequenses where the last number is lesser than n(i). And the base case is that dp[0]=1. Once we fill dp[0] to dp[n-1], the maximum number in dp is the LIS length of the whole array.
+Sol1 (Tabulation) -> for any number at index i, the LIS length when including that number as tail is 1 + max of the length of all pre-subsequenses where the last number is lesser than nums(i). And the base case is that dp[0]=1. Once we fill dp[0] to dp[n-1], the maximum number in dp is the LIS length of the whole array.
 
 Time Complexity : O(n2)
 Space Complexity : O(n)
 
-Sol1 (dp+binarySearch): dp[i] will represent the smallest possible tail value of all increasing subsequences of length i. dp[0]=nums[0], if nums[i]>dp[tail] then add nums[i] to dp, else replace the first larger number in dp with nums[i].
+Sol2 (dp+binarySearch): dp[i] will represent the smallest possible tail value of LIS of length i+1. Initialize dp[0]=nums[0]. If nums[i]>dp[tail] then add nums[i] to dp as we can construct increasing subsequence of dp.size with dp[tail] as ending and nums[i] being greater, we can add that to the subsequence. Else replace the element at lowerBound(dp, nums[i]) with nums[i]. Lower bound is the smallest index at which arr[i]>=x. Say, lower bound of nums[i] is pos. We can construct a increasing subsequence of size pos with dp[pos-1] as ending, which is lesser than nums[i]. Thus, we can add nums[i] to the subsequence to construct a subsequence of size pos+1.
 
 Time Complexity : O(n*logn(n))
 Space Complexity : O(n)
@@ -51,7 +51,7 @@ Space Complexity : O(lengthOfStr)
 
 ---------------Combination Sum IV---------------
 https://leetcode.com/problems/combination-sum-iv/description/
-Idea -> ways(i)=ways(i-nums[j]) & ways(0)=1
+Idea -> ways(i)=Sum(ways(i-nums[j])) & ways(0)=1
 Sol (Tabulation) -> create array dp, where dp[i] is the number of number of possible combinations that add up to i. dp[0]=1. 
 
 	for i, 1 to target
@@ -72,7 +72,7 @@ Time Complexity : (numberOfHouses)
 Space Complexity : O(1)
 
 ----------------Decode Ways---------------
--> dp[i]=0, if(s.charAt(i)!='0') dp[i]+=dp[i+1], if(s.charAt(i)!=0 && (s.charAt(i)-48)*10+s.charAt(i+1)-48<27) dp[i]+=dp[i+2]. figure dp[n-1] & dp[n-2] and use then to loop to the value of dp[0]
+-> initialize dp[i]=0. if(s.charAt(i)!='0') dp[i]+=dp[i+1]. if(s.charAt(i)!=0 && (s.charAt(i)-48)*10+s.charAt(i+1)-48<27) dp[i]+=dp[i+2]. figure dp[n-1] & dp[n-2] and use then to loop to the value of dp[0]
 
 Time Complexity : (strLen)
 Space Complexity : O(1)

@@ -26,7 +26,7 @@ Space Complexity : O(n)
 
 ------------Maximum Sum Subarray-------------
 https://leetcode.com/problems/maximum-subarray/description/
--> A sub array whose sum is negative, can not be a proper subset of the maximum subarray
+-> Use sliding window. A sub array whose sum is negative, can not be a proper subset of the maximum subarray, Thus, slide window if sum is <0.
 
 Time Complexity : (n)
 Space Complexity : O(1)
