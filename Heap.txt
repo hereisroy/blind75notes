@@ -1,0 +1,44 @@
+Important Concepts : Heap Data Structure - Insert, Delete. Creating a heap from an array in linear time.
+
+----------------Merge k Sorted Lists (Using Heap)--------------
+Intuition : If we put the heads of all k lists in a min Heap, we can get the node with min value from the heap. We can iterate until the heap is empty & in every iteration get the min node from the heap & add its next node to the heap.
+
+Time Complexity : O(NLogK)
+	As for all the elements of the lists we will insert, which will take O(LogN) each.
+Space Complexity : O(K)
+	At any given time the heap stores the heads of all the lists
+	
+	
+-----------------Top K Frequent Elements----------------
+Intuition : If we create countMap of the nums array (takes O(N) time), we can then sort accoring to the count and give the top k entries. This will take O(NLogN) time. Again, we can create a MaxHeap of the entires in the count map according to the counts (takes O(N) time). Then, we can take out K elements from the heap to fill the result array (takes O(K*LogU)). We can also use a MinHeap and add count entries to it then check the size of the heap, if the size if greater than K, we remove the lowest element. In this approach creating the heap takes O(NLogK).
+
+Time Complexity : O(K*LogU + N)
+	U is the number of unique elements in the array
+Space Complexity : O(U)
+
+Intuition (BucketSort) : After filling the countMap, we can create a array count[n+1] where count[i] stores list of numbers having count i. Then we can traverse this array from right to left to find k elements.
+
+Time Complexity : O(N)
+	filling of countMap[O(N)] + filling of countList[O[N]] + finding k numbers from the right [O(K)]
+Space Complexity : O(N)
+	both countMap & countList takes O(N) space
+	
+------------------Find Median from Data Stream----------------
+Intuition : If we maintain a sorted array, then the middle element or the avg of the two middle element is our ans. But while inserting, for shifting all the elements, this will take O(N) per insert. Although for finding the median, we do not require the order of every element. We only need to know the largest element of the smaller half or the nums & the smallest element of the larger half of nums. Thus, we use two heaps. A maxHeap to store the smaller half & a minHeap to store the larger half. When inserting a number, we first insert it into the smaller half. If smaller half is too large, we put it's largest number into the larger half. If smaller half's largest number is not smaller than larger half's smallest, then also we do same. Then, if larger half is too large we put it's smallest num in smaller half. We maintain the size of the two halfs such that their different is no more than 1. If the two halfs have same size, then we take the middle two nums and return the avg, else we take the element from the larger half.
+
+	Code Exmaple
+		public void addNum(int num) {
+			maxHeap.add(num);
+			if( maxHeap.size()-minHeap.size()>1 || (maxHeap.size()>0 && minHeap.size()>0 && maxHeap.peek()>=minHeap.peek())) 
+				minHeap.add(maxHeap.poll());
+			if(minHeap.size()-maxHeap.size()>1) maxHeap.add(minHeap.poll());
+			
+		}
+		
+Time Complexity : O(NLogN)
+	Each insert is taking LogN time
+Space Complexity : O(N)
+	both heaps are taking N/2
+
+
+

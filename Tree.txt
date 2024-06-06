@@ -320,3 +320,63 @@ Space Complexity : O(H)
 
 --------------------Implement Trie (Prefix Tree)--------------
 See Trie in details
+
+-----------------Design Add and Search Words Data Structure----------
+Intuition : There can be wildcard words like "..ab", "ab.." . We can use a recursive approach for the search. When dealing with a '.', for any of the children of the TrieNode, if there is the rest of the word, we can return true.
+
+	Code Exmaple
+		private boolean searchHelper(String word, int index, TrieNode node){
+			if(index==word.length()) return node.end;
+			char c = word.charAt(index);
+			if(c=='.'){
+				for(TrieNode child : node.children.values()) 
+					if(searchHelper(word, index+1, child)) return true;
+				return false;
+			}
+			if(!node.children.containsKey(c)) return false;
+			else return searchHelper(word, index+1, node.children.get(c));
+		}
+		
+Time Complexity : O(L)
+Space Complexity : O(L)
+	If any number of wildcard was allowed, it would have been (26^L).
+	
+--------------------Word Search II--------------------
+Intuition : If we had to search for a single word in the grid, we had to do dfs on all the cells until we found the word. Say, there are M*N cells, then, for a single word the complexity would be O(M^2*N^2). If we do this search for all words, it'll take O(W*M^2*N^2) time. While doing dfs on a cell, we traverse character wise & check whether the ith character of the word is the current cell's character or not. If we have all the words in a Trie, in a single DFS call we can check if there are any target word which has the current cell's character in it's ith index. We can pass the root node of the Trie to the dfs. For each call, if the TrieNode does not have the current cells character, we can stop traversing in that path. Else, if it has the character and that that child marks an end, we have found one string. In this way, in a single dfs call we can find all possible target words. Thus, If we call dfs on each cell, we'll have our list of  possible words.
+
+	Code Example :
+		List<String> res = new ArrayList<>();
+		StringBuilder sb = new StringBuilder();
+		char[][] grid;
+
+		public List<String> findWords(char[][] board, String[] words) {
+			Trie trie = new Trie();
+			trie.addAll(words);
+			grid=board;
+			for(int i=0;i<board.length;i++)
+				for(int j=0;j<board[0].length;j++)
+					dfs(i, j, trie.root);
+			return res;
+		}
+
+		public void dfs(int i, int j, TrieNode node){
+			if(i<0 || i>=grid.length || j<0 || j>=grid[0].length) return;
+			char c = grid[i][j];
+			if(!node.children.containsKey(c)) return;
+			node = node.children.get(c);
+			sb.append(c);
+			for(int k=0;k<node.endCount;k++) {
+				res.add(sb.toString());
+				node.endCount--;
+			}
+			grid[i][j]='#';
+			int[][] paths = {{1,0}, {-1,0}, {0,1}, {0,-1}};
+			for(int[] path : paths)
+				dfs(i+path[0], j+path[1], node);
+			grid[i][j]=c;
+			sb.setLength(sb.length()-1);
+		}
+
+Time Complexity : O(max(W*|L|, M^2*N^2))
+	O(W*|L|) is taken to insert all words into the trie. And O(M^2*N^2)/O(M*N*4^L) time is required for doing dfs on all cells.
+Space Complexity : O(A*W*|L|)

@@ -53,7 +53,7 @@ Optimization by checking character count : The board must have ample characters 
         return true;
     }
 	
-Time Complexity : O(M*N*4^L)
-	 checking if we can contruct the word from a cell takes O(4^L) time as the dfs call for 2nd level has 4 options to check, then at 3rd level has 4^2 options, at 4th level has 4^3 options....at level L-1, has 4^(L-1) options.
+Time Complexity : O(M*N*4^L) or O((M*N)^2)
+	 checking if we can contruct the word from a cell takes O(4^L) time as the dfs call for 2nd level has 4 options to check, then at 3rd level has 4^2 options, at 4th level has 4^3 options....at level L-1, has 4^(L-1) options. Also, when we start dfs call from a cell, we can at max check M*N cells. So we can also say that the dfs call takes O(M*N) time.
 Space Complexity : O(L)
 	For recursion stack
